@@ -1,0 +1,51 @@
+[
+  {
+    "index": 2,
+    "title": "2009-2019年Amazon 亚马逊畅销书50强",
+    "background": "2009年至2019年亚马逊畅销书50强中的数据集。包含550本书，使用Goodreads将数据分类为小说和非小说",
+    "introduce": [
+      "Name-书名",
+      "Author-作者",
+      "User Rating-亚马逊用户评价",
+      "Reviews-亚马逊的页面评论数",
+      "Price-书的价格（截至13/10/2020）",
+      "Year-它在最畅销书中排名的年份",
+      "Genre-小说还是非小说"
+    ],
+    "data_sources": "https://www.kaggle.com/sootersaalu/amazon-top-50-bestselling-books-2009-2019",
+    "problem": ["该数据能解决什么问题？适用于什么场景"]
+  },
+  {
+    "index": 1,
+    "title": "全球手机销售数据",
+    "background": "2018年第一季度-2020年第三季度，全球手机销售数据，包括三星，华为，小米，苹果，oppo等",
+    "introduce": [
+      "Quarter",
+      "Samsung",
+      "Huawei",
+      "Xiaomi",
+      "Apple",
+      "Oppo",
+      "Vivo",
+      "Others"
+    ],
+    "data_sources": "https://www.kaggle.com/andrewtgraham/global-phone-sales-by-company-samsung-apple-huawei",
+    "problem": ["全球各品牌手机销量"]
+  },
+  {
+    "index": 3,
+    "title": "Stack Overflow 2020年用户调研数据集",
+    "background": "Stack Overflow 2020年用户调研数据集 ，从180多个国家和地区进行了近65,000份回复，调查了开发人员经验的方方面面，包括职业满意度和求职，对开源软件的教育和意见。",
+    "introduce": [
+      "Column QuestionText",
+      "Respondent Randomized respondent ID number (not in order of survey response time)",
+      "MainBranch Which of the following options best describes you today? Here, by developer we mean someone who writes code.",
+      "Hobbyist Do you code as a hobby?",
+      "Age What is your age (in years)? If you prefer not to answer, you may leave this question blank.",
+      "Age1stCode At what age did you write your first line of code or program? (e.g., webpage, Hello World, Scratch project)",
+      "CompFreq Is that compensation weekly, monthly, or yearly?"
+    ],
+    "data_sources": "https://insights.stackoverflow.com/survey/2020",
+    "problem":[ "最受欢迎的编程语言","全球程序员的加班时间"]
+  }
+]

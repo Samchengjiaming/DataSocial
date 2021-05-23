@@ -1,0 +1,453 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>创建新的数据集</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static '/js/jquery-3.5.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery.cookie.js' %} "></script>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.css' %} " type="text/css">
+    <link rel="stylesheet" href="{% static '/css/bootstrap/fileinput.css' %} " type="text/css">
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/fileinput.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/locales/zh.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <h2>
+            创建数据集
+        </h2>
+        <form role="form" id="dataset_form" enctype="multipart/form-data;"><!--dataset表格-->
+            {% csrf_token %}
+            <!--数据集封面-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        数据集封面
+                    </h4>
+                </div>
+                <div class="col-md-10">
+                    <h4>
+                        <img alt="140x140" id="dataset_img" src="{% static dataset_img_path %}"
+                             style="height: 100px; width: 100px"/>
+                    </h4>
+                </div>
+            </div>
+            <!--数据集名称-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        <span style="color: red">*</span>
+                        数据集标题
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <input type="text" class="form-control" name="dataset_title" id="dataset_title"
+                               placeholder="数据集名称"/>
+                    </h4>
+                </div>
+            </div>
+            <!--数据背景介绍-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        数据背景介绍
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <input type="text" class="form-control" name="dataset_background" id="dataset_background"
+                               placeholder="数据背景介绍"/>
+                    </h4>
+                </div>
+            </div>
+            <!--数据字段属性介绍-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        数据集字段介绍
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                <textarea class="form-control" rows="5" name="dataset_introduce" id="dataset_introduce"
+                          placeholder="输入一段话描述您的数据集字段属性，不超过200字符"></textarea>
+                </div>
+            </div>
+            <!--数据集来源-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        数据集来源网址
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <input type="text" class="form-control" name="dataset_sources" id="dataset_sources"
+                               placeholder="互联网数据集请标明来源地址，例如：https://www.kaggle.com/sootersaalu/amazon-top-50-bestselling-books-2009-2019"/>
+                    </h4>
+                </div>
+            </div>
+            <!--数据集上传-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        <span style="color: red">*</span>
+                        上传数据集
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <input id="dataset_input" name="dataset_input" type="file" accept=".zip,.rar,.7z,.z,.gz,.tar"
+                               class="file" data-show-preview="false"
+                               data-msg-placeholder="仅支持.zip .rar .7z .z .gz .tar格式且文件不能超过20M">
+                    </h4>
+                </div>
+            </div>
+            <!--数据集标签-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        数据集标签
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <a id="dataset_lable" href="#dataset_lableset" role="button" class="btn"
+                       data-toggle="modal">+添加标签</a>
+
+                    <div class="modal fade" id="dataset_lableset" role="dialog" aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        标签筛选
+                                    </h4>
+                                </div>
+                                <div class="modal-body col-md-12 row container-fluid">
+                                    <div class="row-md-1">
+                                        <div class="col-md-12">
+                                            <h4>
+                                                计算机视觉
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-2">
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_1"
+                                                    onclick="dataset_lable_button_selected(1,this)">面部识别
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_2"
+                                                    onclick="dataset_lable_button_selected(2,this)">图像分类
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_3"
+                                                    onclick="dataset_lable_button_selected(3,this)">目标检测
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_4"
+                                                    onclick="dataset_lable_button_selected(4,this)">姿态检测
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_5"
+                                                    onclick="dataset_lable_button_selected(5,this)">行为识别
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_6"
+                                                    onclick="dataset_lable_button_selected(6,this)">语义分割
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-1">
+                                        <div class="col-md-12">
+                                            <h4>
+                                                自然语言处理
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-2">
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_7"
+                                                    onclick="dataset_lable_button_selected(7,this)">智能问答
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_8"
+                                                    onclick="dataset_lable_button_selected(8,this)">机器翻译
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_9"
+                                                    onclick="dataset_lable_button_selected(9,this)">文本分类
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_10"
+                                                    onclick="dataset_lable_button_selected(10,this)">情感分析
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_11"
+                                                    onclick="dataset_lable_button_selected(11,this)">语音识别
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_12"
+                                                    onclick="dataset_lable_button_selected(12,this)">文本生成
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-1">
+                                        <div class="col-md-12">
+                                            <h4>
+                                                交通
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-2">
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_13"
+                                                    onclick="dataset_lable_button_selected(13,this)">共享汽车
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_14"
+                                                    onclick="dataset_lable_button_selected(14,this)">交通网络
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_15"
+                                                    onclick="dataset_lable_button_selected(15,this)">共享单车
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_16"
+                                                    onclick="dataset_lable_button_selected(16,this)">轨迹数据
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_17"
+                                                    onclick="dataset_lable_button_selected(17,this)">轨道数据
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_18"
+                                                    onclick="dataset_lable_button_selected(18,this)">出租车
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-1">
+                                        <div class="col-md-12">
+                                            <h4>
+                                                机器学习
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-2">
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_19"
+                                                    onclick="dataset_lable_button_selected(19,this)">社交网络
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_20"
+                                                    onclick="dataset_lable_button_selected(20,this)">复杂网络
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_21"
+                                                    onclick="dataset_lable_button_selected(21,this)">时间序列
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_22"
+                                                    onclick="dataset_lable_button_selected(22,this)">回归
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_23"
+                                                    onclick="dataset_lable_button_selected(23,this)">聚类
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default" id="dataset_label_button_24"
+                                                    onclick="dataset_lable_button_selected(24,this)">分类
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                            id="dataset_lableset_confirm">确定
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--数据集权限-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        数据集权限
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <input id="dataset_private" name="dataset_private" value="1" type="checkbox" checked="checked"/>
+                        &nbsp; 公开数据集
+                    </h4>
+                </div>
+            </div>
+            <!--提交按钮-->
+            <div class="col-md-12 column">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-default btn-primary btn-block" id="dataset_create_button">
+                        创建数据集！
+                    </button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </form>
+    </div><!--页面-->
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    var select_lable_num = 0;
+    var select_lable_set = new Set();
+    var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+    //按照数据元素定位
+    Array.prototype.indexOf = function (val) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == val) return i;
+        }
+        return -1;
+    };
+    //按照数据元素定位删除
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+
+    //标签选择
+    function dataset_lable_button_selected(i, obj) {
+        //每一次选择标签，标签数组都清空
+        {#select_lable_list.length = 0;#}
+        //判断lable是否已经有三个
+        if (select_lable_num < 3 || $(obj).hasClass('btn-success')) {
+            if ($(obj).hasClass('btn-success')) {//取消标签
+                $(obj).removeClass('btn-success')
+                select_lable_set.delete($(obj).text().replace(/[\r\n]/g, "").replace(/[ ]/g, ""))
+                select_lable_num--
+            } else {//选择标签
+                $(obj).addClass('btn-success')
+                select_lable_set.add($(obj).text().replace(/[\r\n]/g, "").replace(/[ ]/g, ""))
+                select_lable_num++
+            }
+        } else {
+            alert('最多选择三个标签')
+        }
+    };
+
+    //将lable转化为html文件
+    function lable_to_htmltext(lable_html_text, lable_text) {
+        lable_html_text += "<button type='button' class='btn btn-default selected_lable'>" + lable_text + "</button> <span/>"
+        return lable_html_text
+    };
+
+    //lable添加
+    $('#dataset_lableset_confirm').click(function () {
+        //先删除已经存在的lable
+        $('.selected_lable').remove();
+        //添加lable
+        lable_html_text = ''
+        for (var select_lable of select_lable_set) {
+            lable_html_text = lable_to_htmltext(lable_html_text, select_lable)
+        }
+        $("#dataset_lable").before(lable_html_text);
+        $("#dataset_lable").text('修改标签')
+    });
+
+    //表单异步提交
+    $('#dataset_create_button').click(function () {
+        var dataset_title = $('#dataset_title').val();
+        var dataset_file_name = $('#dataset_input').val();
+        var dataset_file = $('#dataset_input').get(0).files[0];
+        var form_data = new FormData();//$('#dataset_input')
+        if (dataset_title.length == 0) {
+            alert('数据集标题不能为空');
+        } else {
+            if (dataset_file_name.length == 0) {
+                alert('数据集不存在');
+            } else {
+                var dataset_img = $('#dataset_img').attr('src').substring(7);
+                var dataset_background = $("#dataset_background").val();
+                var dataset_introduce = $("#dataset_introduce").val();
+                var dataset_sources = $("#dataset_sources").val();
+                var dataset_private = "0";
+                $('input[name="dataset_private"]:checked').each(function () {
+                    dataset_private = $(this).val();
+                });
+                form_data.append('dataset_file', dataset_file);
+                form_data.append('dataset_img', dataset_img);
+                form_data.append('dataset_background', dataset_background);
+                form_data.append('dataset_introduce', dataset_introduce);
+                form_data.append('dataset_sources', dataset_sources);
+                form_data.append('dataset_private', dataset_private);
+                form_data.append('dataset_title', dataset_title);
+                //将set转化为list追加到formdata中
+                select_lable_list = Array.from(select_lable_set);
+                select_lable_list.forEach((item, index, array) => {
+                    form_data.append('select_lable_' + String(index), item);
+                })
+                form_data.append('select_lable_mun', select_lable_list.length)
+                form_data.append('csrfmiddlewaretoken', csrf)
+                console.log('准备提交了')
+                $.ajax({
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    url: '/dataset/dataset_create_check/',
+                    data: form_data,
+                    success: function (data) {
+                        data = eval("(" + data + ")")
+                        var info_head = data.info_head
+                        if(info_head=='success'){
+                            //页面跳转
+                            window.location.href='{% url 'homepage:homepage' %}';
+                        }else{
+                            alert(data.info_content)
+                        }
+                    }
+                });
+            }
+        }
+
+    });
+
+
+    $("#dataset_input").fileinput({
+        language: 'zh', //设置语言
+        maxFileSize: 20480,//文件最大为20M
+        minFileSize: 0,//文件最小为1kb
+        maxFileCount: 1,//最大上传文件数限制
+        uploadAsync: false,//同步提交
+        showUpload: false,//不允许单独提交
+    });
+</script>

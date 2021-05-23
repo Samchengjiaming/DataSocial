@@ -1,0 +1,292 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>创建任务</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static '/js/jquery-3.5.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery.cookie.js' %} "></script>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.css' %} " type="text/css">
+    <link rel="stylesheet" href="{% static '/css/bootstrap/fileinput.css' %} " type="text/css">
+    <link rel="stylesheet" href="{% static  '/css/bootstrap/bootstrap-datetimepicker.min.css' %}" type="text/css">
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/fileinput.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/locales/zh.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static '/js/bootstrap/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static '/js/bootstrap/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <h2>
+            创建任务
+        </h2>
+        <form role="form" id="dataset_form" enctype="multipart/form-data;"><!--dataset表格-->
+            {% csrf_token %}
+            <!--任务封面-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        任务封面
+                    </h4>
+                </div>
+                <div class="col-md-10">
+                    <h4>
+                        <img alt="140x140" id="dataset_img" src="{% static dataset_img_path %}"
+                             style="height: 100px; width: 100px"/>
+                    </h4>
+                </div>
+            </div>
+            <!--任务名称-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        <span style="color: red">*</span>
+                        任务名称
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <input type="text" class="form-control" name="task_title" id="task_title"
+                               placeholder="任务名称"/>
+                    </h4>
+                </div>
+            </div>
+            <!--任务内容描述-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        任务内容描述
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <textarea class="form-control" rows="3" name="task_describe" id="task_describe"
+                                  placeholder="阐述你的任务" maxlength="200"></textarea>
+                    </h4>
+                </div>
+            </div>
+            <!--任务要求描述-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        任务要求
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <textarea class="form-control" rows="5" name="task_require" id="task_require"
+                                  placeholder="描述你的任务最终要求" maxlength="200"></textarea>
+                    </h4>
+                </div>
+            </div>
+            <!--任务开始日期-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        任务开始时间
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <div class='input-group date' id="begin_day_div">
+                            <input data-format='yyyy-mm-dd' id='begin_day' type='text' class="form-control" placeholder="选择任务开始时间"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </h4>
+                </div>
+            </div>
+            <!--截止日期-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        任务开放时长
+                    </h4>
+                </div>
+                <div class="col-md-6 btn-group dropup">
+                    <h4>
+                        <button type="button" class="btn dropdown-toggle" id="task_day" value="14"
+                                data-toggle="dropdown">
+                            14天
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" onclick="task_day_choice('14')">14天</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" onclick="task_day_choice('21')">21天</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" onclick="task_day_choice('30')">30天</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" onclick="task_day_choice('60')">60天</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" onclick="task_day_choice('90')">90天</a>
+                            </li>
+                        </ul>
+                    </h4>
+                </div>
+            </div>
+            <!--悬赏金币-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        <span style="color: red">*</span>
+                        悬赏金币
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="coin_change('-')">-</button>
+                        </span>
+                        <input type="text" class="form-control" placeholder="50" id="coin_value" maxlength="5"
+                               oninput="min_coin()">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="coin_change('+')">+</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>
+                        <span style="color: red">*</span>
+                        (最少50金币，最多99999金币，如果少于50金币提交时系统会默认设置为50金币)
+                    </h5>
+                </div>
+            </div>
+            <!--数据集上传-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        <span style="color: red">*</span>
+                        上传数据集
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <input id="dataset_input" name="dataset_input" type="file" accept=".zip,.rar,.7z,.z,.gz,.tar"
+                               class="file" data-show-preview="false"
+                               data-msg-placeholder="仅支持.zip .rar .7z .z .gz .tar格式且文件不能超过20M">
+                    </h4>
+                </div>
+            </div>
+            <!--提交按钮-->
+            <div class="col-md-12 column">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-default btn-primary btn-block" id="task_create_button">
+                        创建任务！
+                    </button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    function task_day_choice(day) {
+        $('#task_day').html(day + '天' + '<span class="caret"></span>');
+        $('#task_day').val(day);
+    };
+
+    function coin_change(operate) {
+        if (!isNaN(parseInt($('#coin_value').val()))) {
+            if (operate == '-' && parseInt($('#coin_value').val()) > 50) {
+                $('#coin_value').val($('#coin_value').val() - 1);
+            }
+            if (operate == '+' && parseInt($('#coin_value').val()) < 99999) {
+                $('#coin_value').val(parseInt($('#coin_value').val()) + 1);
+            }
+        }
+    };
+
+    function min_coin() {
+        if (!isNaN(parseInt($('#coin_value').val())) && parseInt($('#coin_value').val()) < 50) {
+            $('#coin_value').text('50')
+        }
+    };
+
+    $('#task_create_button').click(function () {
+        var task_title = $('#task_title').val();
+        var task_describe = $('#task_describe').val();
+        var task_require = $('#task_require').val();
+        var task_coin = parseInt($('#coin_value').val());
+        (task_coin<50 | isNaN(task_coin))?(task_coin=50):(task_coin=task_coin)
+        var task_day = $('#task_day').val();
+        var task_dataset_file_name = $('#dataset_input').val();
+        var task_dataset_file = $('#dataset_input').get(0).files[0];
+        var task_begin_day=$('#begin_day').val();
+        if (task_title.length == 0) {
+            alert('任务标题不能为空');
+        } else {
+            if (task_dataset_file_name.length == 0) {
+                alert('数据集不存在');
+            } else {
+                if (isNaN(task_begin_day)&&!isNaN(Date.parse(task_begin_day))){
+                    var dataset_img = $('#dataset_img').attr('src').substring(7);
+                    var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                    var form_data = new FormData();
+                    form_data.append('dataset_img', dataset_img);
+                    form_data.append('task_title', task_title);
+                    form_data.append('task_describe', task_describe);
+                    form_data.append('task_require', task_require);
+                    form_data.append('task_coin', task_coin);
+                    form_data.append('task_day', task_day);
+                    form_data.append('task_dataset_file', task_dataset_file);
+                    form_data.append('csrfmiddlewaretoken', csrf);
+                    form_data.append('task_begin_day',task_begin_day)
+                    $.ajax({
+                        type: 'POST',
+                        contentType: false,
+                        processData: false,
+                        url: '/task/create_task_check/',
+                        data: form_data,
+                        success: function (data) {
+                            data = eval("(" + data + ")")
+                            var info_head = data.info_head
+                            if (info_head == 'success') {
+                                //页面跳转
+                                alert('任务创建成功，即将跳转至个人主页')
+                                window.location.href = '{% url 'homepage:homepage' %}'
+                            } else {
+                                alert(data.info_content)
+                            }
+                        }
+                    });
+                }else{
+                    console.log(task_begin_day)
+                    alert('任务开始时间格式不正确！')
+                }
+            }
+        }
+
+    });
+
+    $("#dataset_input").fileinput({
+        language: 'zh', //设置语言
+        maxFileSize: 20480,//文件最大为20M
+        minFileSize: 0,//文件最小为1kb
+        maxFileCount: 1,//最大上传文件数限制
+        uploadAsync: false,//同步提交
+        showUpload: false,//不允许单独提交
+    });
+
+    $('#begin_day_div').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language: 'zh-CN',
+        minView: "month",
+        autoclose: 1,//选择后自动关闭
+        clearBtn:true,//清除按钮
+        startDate:new Date(),
+    });
+</script>

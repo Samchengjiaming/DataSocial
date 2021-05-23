@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提交任务答案</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static '/js/jquery-3.5.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery.cookie.js' %} "></script>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.css' %} " type="text/css">
+    <link rel="stylesheet" href="{% static '/css/bootstrap/fileinput.css' %} " type="text/css">
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/fileinput.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/locales/zh.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <h2>
+            提交您的答案
+        </h2>
+        <form role="form" id="dataset_form" enctype="multipart/form-data;"><!--dataset表格-->
+            {% csrf_token %}
+            <!--答案内容描述-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        <span style="color: red">*</span>
+                        答案描述
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <textarea class="form-control" rows="5" name="answer_describe" id="answer_describe"
+                                  placeholder="对您的答案进行描述" maxlength="500"></textarea>
+                    </h4>
+                </div>
+            </div>
+            <!--答案不足-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        答案不足
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <textarea class="form-control" rows="2" name="answer_insufficient" id="answer_insufficient"
+                                  placeholder="您的答案有何不足" maxlength="500"></textarea>
+                    </h4>
+                </div>
+            </div>
+            <!--答案数据集上传-->
+            <div class="col-md-12 column">
+                <div class="col-md-2">
+                    <h4>
+                        <span style="color: red">*</span>
+                        上传数据集
+                    </h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>
+                        <input id="dataset_input" name="dataset_input" type="file" accept=".zip,.rar,.7z,.z,.gz,.tar"
+                               class="file" data-show-preview="false"
+                               data-msg-placeholder="仅支持.zip .rar .7z .z .gz .tar格式且文件不能超过20M">
+                    </h4>
+                </div>
+            </div>
+            <!--提交按钮-->
+            <div class="col-md-12 column">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-default btn-primary btn-block" id="sumbit_task_answer">
+                        提交答案
+                    </button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    //提交任务答案
+    $("#sumbit_task_answer").click(function () {
+        var answer_describe = $('#answer_describe').val();
+        var answer_insufficient = $('#answer_insufficient').val();
+        var task_dataset_file_name = $('#dataset_input').val();
+        var task_dataset_file = $('#dataset_input').get(0).files[0];
+        if (answer_describe.length == 0) {
+            alert('答案描述不能为空');
+        } else {
+            if (task_dataset_file_name.length == 0) {
+                alert('数据集不存在');
+            } else {
+                var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                var form_data = new FormData();
+                form_data.append('answer_describe', answer_describe);
+                form_data.append('answer_insufficient', answer_insufficient);
+                form_data.append('task_dataset_file', task_dataset_file);
+                form_data.append('task_id',{{ task_id }})
+                form_data.append('csrfmiddlewaretoken',csrf)
+                $.ajax({
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    url: '{% url 'homepage:check_submit_task_answer' %}',
+                    data: form_data,
+                    success: function (data) {
+                        data = eval("(" + data + ")")
+                        var info_head = data.info_head
+                        if (info_head == 'success_01') {
+                            //页面跳转
+                            alert('任务提交成功，即将跳转至个人主页')
+                            window.location.href=data.extra_message.herf
+                        } else {
+                            alert(data.info_content)
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+
+    $("#dataset_input").fileinput({
+        language: 'zh', //设置语言
+        maxFileSize: 20480,//文件最大为20M
+        minFileSize: 0,//文件最小为1kb
+        maxFileCount: 1,//最大上传文件数限制
+        uploadAsync: false,//同步提交
+        showUpload: false,//不允许单独提交
+    });
+</script>

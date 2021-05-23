@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static '/js/jquery-3.5.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery.cookie.js' %} "></script>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.css' %} " type="text/css">
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrap.js' %}"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <!--顶部留白-->
+    <div class="row clearfix" style="height: 20vh">
+        <div class="col-md-4 column">
+        </div>
+        <div class="col-md-4 column">
+            <img class="img-responsive center-block" alt="img" src="{% static '/images/DataSocial.png' %}" height="35"
+                 width="100"/>
+        </div>
+        <div class="col-md-4 column">
+        </div>
+    </div>
+    <!--注册链接-->
+    <div class="row clearfix" style="height: 30vh">
+        <div class="col-md-4 column">
+        </div>
+        <div class="col-md-4 column">
+            <button type="button" class="btn btn-default btn-block">
+                <a href="{% url 'UserRegister:reg_phone' %}">手机注册</a>
+            </button>
+            <button type="button" class="btn btn-default btn-block">
+                <a href="{% url 'UserRegister:reg_email' %}">邮箱注册</a>
+            </button>
+            <button type="button" class="btn btn-default btn-block">
+                <a href="{% url 'UserRegister:reg_password' %}">密码注册</a>
+            </button>
+        </div>
+        <div class="col-md-4 column">
+        </div>
+    </div>
+    <!--底部链接-->
+    <div class="row clearfix" style="height: 20vh">
+        <div class="col-md-4 column">
+        </div>
+        <div class="col-md-4 column">
+            <p align="center">
+                <em>DataSocial</em> 是一个线上数据交互社区，由 <strong>山东师范大学商学院梅谷学堂创业小组</strong>
+                编写，最初用作实验室内部数据管理，以及任务发布等。后在2020年面向所有高校公开，截止目前为止，<em>DataSocial</em>已发展成了一个具有30000+会员、
+                与145所高校达成合作的数据交互社区。
+            </p>
+        </div>
+        <div class="col-md-4 column">
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,288 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据集</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static '/js/jquery-3.5.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery.cookie.js' %} "></script>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.css' %} " type="text/css">
+    <link rel="stylesheet" href="{% static '/css/bootstrap/fileinput.css' %} " type="text/css">
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/fileinput.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/locales/zh.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <!--顶部导航栏-->
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default" role="navigation" style="background: #75bcef">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#bs-example-navbar-collapse-1"><span
+                                class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                                class="icon-bar"></span><span class="icon-bar"></span></button>
+                        <a class="navbar-brand" href="/">数友引力</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="{% url 'task:task_list' %}">任务中心</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'Dataset:dataset_list' %}">数据集</a>
+                            </li>
+                            <li>
+                                <a href="#">讨论中心</a>
+                            </li>
+                            <li>
+                                <a href="#">知识科普</a>
+                            </li>
+                        </ul>
+                        <form class="navbar-form navbar-left" role="search">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder=""/>
+                            </div>
+                            <button type="submit" class="btn btn-default">搜索</button>
+                        </form>
+                        {% if request.COOKIES.user_id %}
+                            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li>
+                                        <a href="{% url 'homepage:homepage' %}">
+                                            <span class="glyphicon glyphicon-user"></span>{{ request.COOKIES.user_id }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'UserRegister:logout' %}">退出登录</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <ul class="nav navbar-nav navbar-right">
+                                <li>
+                                    <a href="{% url 'UserRegister:sign_in' %}">登录</a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">注册<strong
+                                            class="caret"></strong></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="{% url 'UserRegister:reg_email' %}">邮箱注册</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'UserRegister:reg_phone' %}">手机号注册</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'UserRegister:reg_password' %}">密码注册</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        {% endif %}
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!--左边展示数据集-->
+        <div class="col-md-8 col-xs-12 column">
+            <!--数据集筛选与数据集创建-->
+            <div class="col-md-12 row col-xs-12">
+                <div class="col-md-3 col-xs-4">
+                    <h3>
+                        数据集
+                    </h3>
+                </div>
+                <div class="col-md-7 col-xs-5">
+                    <h3>
+                        <button type="button" class="btn  btn-default">标签筛选</button>
+                    </h3>
+                </div>
+                <div class="col-md-2 col-xs-3">
+                    <h3>
+                        <a type="button" class="btn  btn-default btn-primary" href="{% url 'Dataset:dataset_create' %}">创建数据集</a>
+                    </h3>
+                </div>
+            </div>
+            <!--预览数据类型表头-->
+            <div class="col-md-12 column">
+                <div class="clearfix">
+                    <ul class="nav nav-tabs">
+                        <li id="recommend">
+                            <a href="{% url 'Dataset:dataset_list' page=1 lable='recommend' %}">推荐</a>
+                        </li>
+                        <li id="cv">
+                            <a href="{% url 'Dataset:dataset_list' page=1 lable='cv' %}">计算机视觉</a>
+                        </li>
+                        <li id="nlp">
+                            <a href="{% url 'Dataset:dataset_list' page=1 lable='nlp' %}">自然语言处理</a>
+                        </li>
+                        <li id="td">
+                            <a href="{% url 'Dataset:dataset_list' page=1 lable='td' %}">交通数据</a>
+                        </li>
+                        <li id="ml">
+                            <a href="{% url 'Dataset:dataset_list' page=1 lable='ml' %}">机器学习</a>
+                        </li>
+                        <li id="all">
+                            <a href="{% url 'Dataset:dataset_list' page=1 lable='all' %}">全部</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--数据集展示-->
+            <div class="col-md-12 column">
+                <!--一个数据集ele-->
+                {% for dataset_info in dataset_info_page.object_list %}
+                    <div class="col-md-12 column" style="margin-top: 15px;margin-bottom:15px">
+                        <div class="col-md-12 column">
+                            <div class="row">
+                                <!--数据集封面图片部分left-->
+                                <div class="col-md-2 column col-xs-3 clearfix" style="margin-top: 12px">
+                                    <img alt="数据集封面~" src="{% static dataset_info.dataset_img_path %}"
+                                         class="img-responsive center-block img-rounded"/>
+                                </div>
+                                <!--数据集信息部分middle-->
+                                <div class="col-md-8 column col-xs-9 clearfix">
+                                    <!--顶部显示数据集标题和创建日期middle-top-->
+                                    <div class="row clearfix">
+                                        <div class="col-md-8 column col-xs-8">
+                                            <h4>{{ dataset_info.dataset_title }}</h4>
+                                        </div>
+                                        <div class="col-md-4 column col-xs-4">
+                                            <h5>{{ dataset_info.dataset_up_day }}</h5>
+                                        </div>
+                                    </div>
+                                    <!--数据集介绍middle-middle-->
+                                    <div class="row clearfix">
+                                        <div class="col-md-12 column hidden-xs">
+                                            <p>
+                                                {% for dataset_set_background_ele in dataset_set_background %}
+                                                    {% if dataset_set_background_ele.dataset_info_background_id == dataset_info.dataset_id %}
+                                                        {{ dataset_set_background_ele.dataset_info_background_content }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!--作者标签middle-bottom-->
+                                    <div class="row clearfix">
+                                        <div class="col-md-4 column">
+                                            <a href="#">
+                                                <span class="glyphicon glyphicon-user"></span>{{ dataset_info.author_id }}
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8 column hidden-xs">
+                                            {% for dataset_set_lables_ele in dataset_set_lables %}
+                                                {% if dataset_set_lables_ele.dataset_info_labels_id == dataset_info.dataset_id %}
+                                                    <a>#{{ dataset_set_lables_ele.dataset_info_label_1 }}</a>
+                                                    <a>#{{ dataset_set_lables_ele.dataset_info_label_2 }}</a>
+                                                    <a>#{{ dataset_set_lables_ele.dataset_info_label_3 }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--点赞right-->
+                                <div class="col-md-2 column col-xs-2 hidden-xs" style="margin-top: 40px;">
+                                    <button type="button" class="btn btn-default" id="{{ dataset_info.dataset_id }}"
+                                            onclick="collect_dataset(this)">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                        {% for collect_dataset_ele in collect_dataset %}
+                                            {% if collect_dataset_ele.collect_dataset_id == dataset_info.dataset_id %}
+                                                已
+                                            {% endif %}
+                                        {% endfor %}
+                                        收藏
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!--分页页数-->
+            <div class="col-md-12 col-xs-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-5 col-xs-4 column">
+                    </div>
+                    <div class="col-md-3 col-xs-5 column">
+                        <ul class="pagination">
+                            {% for page in dataset_info_paginator.page_range %}
+                                <li>
+                                    <a href="{% url 'Dataset:dataset_list' page=page lable=lable %}">{{ page }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-4 col-xs-3 column">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--右边常用数据集展示-->
+        <div class="col-md-4 hidden-xs column">
+            <div class="list-group">
+                <a href="#" class="list-group-item active">常用数据集</a>
+                <a href="#" class="list-group-item">手写数字识别</a>
+                <a href="#" class="list-group-item">鸢尾花数据集</a>
+                <a href="#" class="list-group-item">COCO图像分类数据集</a>
+                <a href="#" class="list-group-item">ImageNet图像分类数据集</a>
+                <a href="#" class="list-group-item">斯坦福体育赛事数据集</a>
+                <a href="#" class="list-group-item">HMDB：大型人体运动数据库</a>
+                <a href="#" class="list-group-item">叶片分割挑战烟草和拟南芥植物图像</a>
+                <a href="#" class="list-group-item">CALVIN研究组数据集</a>
+            </div>
+            <!--显示右侧广告-->
+            <div class="col-md-12 hidden-xs column">
+                <img alt="140x140" src="{% static '/images/dataset/dataset_ad.jpg' %}"
+                     class="img-rounded img-responsive"/>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        $("#" + "{{ lable }}").addClass('active');
+    });
+
+    function collect_dataset(obj) {
+        dataset_id = $(obj).attr('id')
+        if ($.cookie('user_id') == undefined) {//没有登录不能收藏
+            alert('您还未登录')
+            window.location.href = '{% url 'UserRegister:sign_in' %}'
+        } else {
+            if ($(obj).text().indexOf("已") == -1) {
+                var user_id = $.cookie('user_id');
+                var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                $.ajax({
+                    url: '{% url 'Dataset:dataset_list' %}',
+                    type: 'post',
+                    data: {
+                        'user_id': user_id,
+                        'dataset_id': dataset_id,
+                        'csrfmiddlewaretoken': csrf
+                    },
+                    success: function (data) {
+                        data = eval("(" + data + ")")
+                        var info_head = data.info_head
+                        if (info_head == 'success_01') {
+                            $(obj).text('已收藏')
+                        }
+                        if (info_head == 'fail_01') {
+                            alert('收藏失败')
+                        }
+                    }
+                });
+            } else {
+                alert('你已经收藏该数据集')
+            }
+        }
+    }
+</script>

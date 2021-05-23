@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static '/js/jquery-3.5.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery.cookie.js' %} "></script>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.css' %} " type="text/css">
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrap.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <!--顶部导航栏-->
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation" style="background: #75bcef">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1"><span
+                            class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <a class="navbar-brand" href="/">数友引力</a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="{% url 'task:task_list' %}">任务中心</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'Dataset:dataset_list' %}">数据集</a>
+                        </li>
+                        <li>
+                            <a href="#">讨论中心</a>
+                        </li>
+                        <li>
+                            <a href="#">知识科普</a>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-left" role="search">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder=""/>
+                        </div>
+                        <button type="submit" class="btn btn-default">搜索</button>
+                    </form>
+                    {% if user_id %}
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li>
+                                    <a href="{% url 'homepage:homepage' %}">
+                                        <span class="glyphicon glyphicon-user"></span>{{ user_id }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'UserRegister:logout' %}">退出登录</a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="{% url 'UserRegister:sign_in' %}">登录</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">注册<strong
+                                        class="caret"></strong></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{% url 'UserRegister:reg_email' %}">邮箱注册</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'UserRegister:reg_phone' %}">手机号注册</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'UserRegister:reg_password' %}">密码注册</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!--轮播图-->
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="carousel slide" id="carousel-190248">
+                <ol class="carousel-indicators">
+                    <li class="active" data-slide-to="0" data-target="#carousel-190248"></li>
+                    <li data-slide-to="1" data-target="#carousel-190248"></li>
+                    <li data-slide-to="2" data-target="#carousel-190248"></li>
+                    <li data-slide-to="3" data-target="#carousel-190248"></li>
+                    <li data-slide-to="4" data-target="#carousel-190248"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="item active" style="height: 300px">
+                        <a href="{% url 'task:task_list' %}">
+                            <img alt="" src="{% static '/images/index/slideshow/slideshow_02.jpg' %}"
+                                 style="height: 300px; width: 100%; display: block"/>
+                        </a>
+                    </div>
+                    <div class="item " style="height: 300px">
+                        <a href="{% url 'Dataset:dataset_list' %}">
+                            <img alt="" src="{% static '/images/index/slideshow/slideshow_01.png' %}"
+                                 style="height: 300px; width: 100%; display: block"/>
+                        </a>
+                    </div>
+                    <div class="item" style="height: 300px">
+                        <img alt="" src="{% static '/images/index/slideshow/slideshow_03.png' %}"
+                             style="height: 300px; width: 100%; display: block"/>
+                    </div>
+                    <div class="item" style="height: 300px">
+                        <img alt="" src="{% static '/images/index/slideshow/slideshow_04.png' %}"
+                             style="height: 300px; width: 100%; display: block"/>
+                    </div>
+                    <div class="item" style="height: 300px">
+                        <img alt="" src="{% static '/images/index/slideshow/slideshow_05.jpg' %}"
+                             style="height: 300px; width: 100%; display: block"/>
+                    </div>
+                </div>
+                <a class="left carousel-control" href="#carousel-190248" data-slide="prev"><span
+                        class="glyphicon glyphicon-chevron-left"></span>
+                </a> <a class="right carousel-control" href="#carousel-190248" data-slide="next"><span
+                    class="glyphicon glyphicon-chevron-right"></span></a>
+            </div>
+        </div>
+    </div>
+    <!--轮播图和数据集介绍之间的留白-->
+    <div class="row clearfix" style="height: 10vh"></div>
+
+    <!--任务中心展示-->
+    <div class="jumbotron">
+        <h1>
+            welcome to DATA ATTRACTION~
+        </h1>
+        <p>
+            “数友引力”是一个主要面向高校教师和学生群体的一站式数据服务平台，用户可以在平台上发布数据处理与分析等方面的任务，也可以进行任务接单。
+        </p>
+        <p>
+            <a class="btn btn-primary btn-large" href="{% url 'task:task_list' %}">立即前往</a>
+        </p>
+    </div>
+
+
+    <!--数据集展示-->
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img alt="300x200" src="{% static '/images/index/dataset_img03.jpeg' %}" style="height: 170px"/>
+                        <div class="caption">
+                            <h3>
+                                全球手机销售数据
+                            </h3>
+                            <p>
+                                2018年第一季度-2020年第三季度，全球各品牌手机销售数据，包括三星，华为，小米，苹果，oppo等。
+                            </p>
+                            <p>
+                                <a class="btn btn-primary" href="{% url 'Dataset:example_dataset_info' 1 %}">了解更多</a>
+                                <a class="btn" href="{% url 'Dataset:example_dataset_download' 1 %}">立即下载</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img alt="300x200" src="{% static '/images/index/dataset_img01.jpg' %}" style="height: 170px"/>
+                        <div class="caption">
+                            <h3>
+                                亚马逊畅销书50强数据
+                            </h3>
+                            <p>
+                                2009年至2019年亚马逊畅销书50强数据集。包含550本书，使用Goodreads将数据分类为小说和非小说。
+                            </p>
+                            <p>
+                                <a class="btn btn-primary" href="{% url 'Dataset:example_dataset_info' 2 %}">了解更多</a>
+                                <a class="btn" href="{% url 'Dataset:example_dataset_download' 2 %}">立即下载</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img alt="300x200" src="{% static '/images/index/dataset_img02.jpeg' %} "
+                             style="height: 170px"/>
+                        <div class="caption">
+                            <h3>
+                                Stack Overflow 数据集
+                            </h3>
+                            <p>
+                                Stack Overflow2020年用户调研数据集，来自180多个国家和地区进行了近65,000份回复。
+                            </p>
+                            <p>
+                                <a class="btn btn-primary" href="{% url 'Dataset:example_dataset_info' 3 %}">了解更多</a>
+                                <a class="btn" href="{% url 'Dataset:example_dataset_download' 3 %}">立即下载</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

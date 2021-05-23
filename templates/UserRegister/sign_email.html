@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static '/js/jquery-3.5.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery.cookie.js' %} "></script>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.css' %} " type="text/css">
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrap.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column" style="height: 5vh">
+            <!--页面顶部留白-->
+        </div>
+        <div class="col-md-12 column">
+            <div class="row clearfix">
+                <div class="col-md-7 column">
+                    <img alt="140x140" src="{% static '/images/BigData_reg.jpg' %}" height="450" width="500"/>
+                    <blockquote>
+                        <p>
+                            信息是21世纪的石油，而分析则是内燃机。
+                        </p> <small>Gartner研究院高级副总裁 <cite>Peter Sondergaard</cite></small>
+                    </blockquote>
+                </div>
+                <div class="col-md-5 column">
+                    <div class="col-md-12" style="height: 15vh">
+                        <!--表单上方留白-->
+                    </div>
+                    <form role="form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>邮箱</label><input type="text" class="form-control" name="email" id="email"/>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label>验证码</label><input type="text" class="form-control" name="verification" id="verification"/>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6 column">
+                                <button id="verification_button" type="button" class="btn btn-default btn-block">获取验证码</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6 column">
+                                <button type="button" id="form_input" class="btn btn-default btn-block">登录</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    var countdown = 120;
+    $(function () {
+        //异步获得验证码
+        $('#verification_button').click(function () {
+            var email_num = $('#email').val()
+            //先判断邮箱是否符合格式
+            if (/^[a-zA-Z0-9_-]+@([a-zA-Z0-9]+\.)+(com|cn|net|org)$/.test(email_num)) {
+                settime()
+                var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                $.post('/account/sign_in/sign_check/',
+                    {
+                        'email_num': email_num,
+                        'csrfmiddlewaretoken': csrf,
+                        "post_type": 'get_email_verification'
+                    },
+                    function (data, status) {
+                        data = eval("(" + data + ")")
+                        var info_head = data.info_head
+                        if (info_head == 'fail_01') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'success_01') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'fail_02') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'error_01') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'fail_03') {
+                            alert(data.info_content)
+                        }
+                    })
+            } else {
+                alert('邮箱格式不正确')
+            }
+        })
+        //异步提交表单
+        $('#form_input').click(function () {
+            var email_num = $('#email').val()
+            var verification = $('#verification').val()
+            //先判断邮箱是否符合格式
+            if (/^[a-zA-Z0-9_-]+@([a-zA-Z0-9]+\.)+(com|cn|net|org)$/.test(email_num) && verification.length == 4) {//格式正确
+                var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                //提交表单
+                $.post('/account/sign_in/sign_check/',
+                    {
+                        'email_num': email_num,
+                        'csrfmiddlewaretoken': csrf,
+                        "post_type": 'email_form_post',
+                        'verification': verification,
+                    },
+                    function (data, status) {
+                        data = eval("(" + data + ")")
+                        var info_head = data.info_head
+                        if (info_head == 'error_01') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'success_03') {
+                            var herf = data.extra_message.tolink
+                            var user_id = data.extra_message.user_id
+                            var cookie_day = data.extra_message.cookie_day
+                            $.cookie('user_id', user_id, {
+                                expires: cookie_day,
+                                path: '/',
+                            })
+                            window.location.href = herf
+                        }
+                        if (info_head == "fail_04") {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'fail_03') {
+                            alert(data.info_content)
+                        }
+                    })
+            } else {
+                alert('邮箱格式不正确')
+            }
+        })
+    });
+
+    function settime() {
+        if (countdown == 0) {
+            $("#verification_button").attr("disabled", false);
+            $("#verification_button").text('获取验证码');
+            countdown = 120;
+        } else {
+            $("#verification_button").attr("disabled", true);
+            $("#verification_button").text("重新发送(" + countdown + ")");
+            countdown--;
+            setTimeout(settime, 1000)
+        }
+    }
+</script>

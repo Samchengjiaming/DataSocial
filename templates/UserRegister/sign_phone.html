@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>手机登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static '/js/jquery-3.5.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery.cookie.js' %} "></script>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.css' %} " type="text/css">
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrap.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column" style="height: 5vh">
+            <!--页面顶部留白-->
+        </div>
+        <div class="col-md-12 column">
+            <div class="row clearfix">
+                <div class="col-md-7 column">
+                    <img alt="140x140" src="{% static '/images/BigData_reg.jpg' %}" height="450" width="500"/>
+                    <blockquote>
+                        <p>
+                            信息是21世纪的石油，而分析则是内燃机。
+                        </p> <small>Gartner研究院高级副总裁 <cite>Peter Sondergaard</cite></small>
+                    </blockquote>
+                </div>
+                <div class="col-md-5 column">
+                    <div class="col-md-12" style="height: 15vh">
+                        <!--表单上方留白-->
+                    </div>
+                    <form role="form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>手机号</label><input type="text" class="form-control" name="telephone" id="telephone"/>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label>验证码</label><input type="text" class="form-control" name="verification" id="verification"/>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6 column">
+                                <button id="verification_button" type="button" class="btn btn-default btn-block">获取验证码</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6 column">
+                                <button type="button" id="form_input" class="btn btn-default btn-block">登录</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    var countdown = 300;
+    $(function () {
+        //异步获取手机验证码
+        $('#verification_button').click(function () {
+            {#首先前端验证手机号码是否符合格式要求#}
+            var tele_number = $('#telephone').val()
+            if (tele_number.length == 11 && /^1[34578]\d{9}$/.test(tele_number)) {
+                {#符合电话号码格式,设置button在5分钟内不能点击，开始异步请求服务器发送数据#}
+                settime()
+                var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                $.post('/account/sign_in/sign_check/',
+                    {
+                        'tele_number': tele_number,
+                        'csrfmiddlewaretoken': csrf,
+                        "post_type": 'get_telephone_verification'
+                    },
+                    function (data, status) {
+                        data = eval("(" + data + ")")
+                        var info_head = data.info_head
+                        if (info_head == 'fail_01') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'success_01') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'fail_02') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'error_01') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'fail_03') {
+                            alert(data.info_content)
+                        }
+                    });
+            } else {
+                {#不符电话号码合格式要求，清空输入框并提示#}
+                alert('手机号不正确！')
+                $('#telephone').val(function () {
+                    return ""
+                })
+            }
+        });
+
+        //提价表单
+        $('#form_input').click(function () {
+            var tele_number = $('#telephone').val()
+            var verification = $('#verification').val()
+            var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+            if (tele_number.length == 11 && /^1[34578]\d{9}$/.test(tele_number) && verification.length == 4) {
+                $.post('/account/sign_in/sign_check/',
+                    {
+                        'tele_number': tele_number,
+                        'csrfmiddlewaretoken': csrf,
+                        "post_type": 'telephone_form_post',
+                        'verification': verification
+                    },
+                    function (data, status) {
+                        data = eval("(" + data + ")")
+                        var info_head = data.info_head
+                        if (info_head == 'error_01') {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'success_03') {
+                            var herf = data.extra_message.tolink
+                            var user_id = data.extra_message.user_id
+                            var cookie_day = data.extra_message.cookie_day
+                            $.cookie('user_id', user_id, {
+                                expires: cookie_day,
+                                path: '/',
+                            })
+                            window.location.href = herf
+                        }
+                        if (info_head == "fail_04") {
+                            alert(data.info_content)
+                        }
+                        if (info_head == 'fail_03') {
+                            alert(data.info_content)
+                        }
+                    })
+            }
+        });
+
+    });
+
+    function settime() {
+        if (countdown == 0) {
+            $("#verification_button").attr("disabled", false);
+            $("#verification_button").text('获取验证码');
+            countdown = 300;
+        } else {
+            $("#verification_button").attr("disabled", true);
+            $("#verification_button").text("重新发送(" + countdown + ")");
+            countdown--;
+            setTimeout(settime, 1000)
+        }
+    }
+</script>

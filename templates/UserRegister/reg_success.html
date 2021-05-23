@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册成功</title>
+
+</head>
+<body>
+<h>注册成功</h>
+<b id="second">5</b>秒后自动跳转到主页&nbsp;<a href="javascript:goBack();">立刻跳转</a>
+<script type="text/javascript">
+    var sec = document.getElementById("second");
+    var i = 5;
+    var timer = setInterval(function () {
+        i--;
+        sec.innerHTML = i;
+        if (i == 1) {
+            window.location.href = '/';
+        }
+    }, 1000);
+
+    function goBack() {
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>

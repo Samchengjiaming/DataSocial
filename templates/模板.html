@@ -1,0 +1,40 @@
+<!DOCTYPE html >
+<html >
+<head>
+<meta charset="utf-8" />
+<title>可编辑表格</title>
+<script>
+function addRow(){
+    var oTable = document.getElementById("oTable");
+    var tBodies = oTable.tBodies;
+    var tbody = tBodies[0];
+    var tr = tbody.insertRow(tbody.rows.length);
+    var td_1 = tr.insertCell(0);
+    td_1.innerHTML = "<div contenteditable='true'>第1列</div>";
+    var td_2 = tr.insertCell(1);
+    td_2.innerHTML = "<div contenteditable='true'>第2列</div>";
+    }
+
+</script>
+</head>
+<body>
+<fieldset>
+<legend>可编辑的表格</legend>
+<table id="oTable" style="background-color:#eeeeee;" bordercolor="#aaaaaa" border="1" cellpadding="0" cellpadding="2" width="100%">
+<thead>
+<tr>
+<th>第一列标题</th>
+<th>第二列标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><div contenteditable="true">第一行第一列</div></td>
+<td><div contenteditable="true">第一行第二列</div></td>
+</tr>
+</tbody>
+</table>
+</fieldset>
+<input type="button" onClick="addRow();" style="font-size:16px;" value="+"/>
+</body>
+</html>

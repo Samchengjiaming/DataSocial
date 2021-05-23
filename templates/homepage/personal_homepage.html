@@ -1,0 +1,434 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人主页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static '/js/jquery-3.5.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery.cookie.js' %} "></script>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.css' %} " type="text/css">
+    <link rel="stylesheet" href="{% static '/css/bootstrap/fileinput.css' %} " type="text/css">
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/fileinput.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/bootstrap/bootstrapfileinput/locales/zh.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <!--顶部导航栏-->
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default" role="navigation" style="background: #75bcef">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#bs-example-navbar-collapse-1"><span
+                                class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                                class="icon-bar"></span><span class="icon-bar"></span></button>
+                        <a class="navbar-brand" href="/">Data attraction</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="{% url 'Dataset:dataset_list' %}">数据集</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'task:task_list' %}">任务中心</a>
+                            </li>
+                            <li>
+                                <a href="#">新闻</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">了解我们<strong
+                                        class="caret"></strong></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#">程嘉明</a>
+                                    </li>
+                                    <li class="divider">
+                                    </li>
+                                    <li>
+                                        <a href="#">网站介绍</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">项目组指导老师</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">项目组成员</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <form class="navbar-form navbar-left" role="search">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder=""/>
+                            </div>
+                            <button type="submit" class="btn btn-default">搜索</button>
+                        </form>
+                        {% if request.COOKIES.user_id %}
+                            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li>
+                                        <a href="#">
+                                            <span class="glyphicon glyphicon-user"></span>{{ request.COOKIES.user_id }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'UserRegister:logout' %}">退出登录</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <ul class="nav navbar-nav navbar-right">
+                                <li>
+                                    <a href="{% url 'UserRegister:sign_in' %}">登录</a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">注册<strong
+                                            class="caret"></strong></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="{% url 'UserRegister:reg_email' %}">邮箱注册</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'UserRegister:reg_phone' %}">手机号注册</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'UserRegister:reg_password' %}">密码注册</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        {% endif %}
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div class="col-md-12 column">
+            <div class="row clearfix">
+                <div class="col-md-4 column">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                个人信息
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-md-2 column" style="padding:0px">
+                                <img alt="140x140" src="{% static '/images/homepage/personal_icon.jpg' %}"
+                                     class="img-circle"/>
+                            </div>
+                            <div class="col-md-7 column item">
+                                <div class="row clearfix">
+                                    <div class="col-md-12 column">
+                                        <h4>
+                                            {{ user_name.name | default_if_none:"未设置昵称" | default:"未设置昵称" }}
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-md-12 column">
+                                        <p>
+                                            {{ user_info.signature | default_if_none:"介绍一下自己吧~" | default:'介绍一下自己吧~' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 column hidden-xs">
+                                <h4>
+                                    <span class="glyphicon glyphicon-education"></span>
+                                    {{ user_info.class_field | default_if_none:"0" | default:'0' }}级
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+                                    <div class="row clearfix">
+                                        <div class="col-md-4 column">
+                                            <h5>
+                                                学校/公司a
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-8 column">
+                                            <h5>
+                                                {{ user_info.school_or_company | default_if_none:"—————未填写—————" | default:'—————未填写—————' }}
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+                                    <div class="row clearfix">
+                                        <div class="col-md-4 column">
+                                            <h5>
+                                                专业/职位
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-8 column">
+                                            <h5>
+                                                {{ user_info.major_or_position | default_if_none:"—————未填写—————" | default:'—————未填写—————' }}
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+                                    <div class="row clearfix">
+                                        <div class="col-md-4 column">
+                                            <h5>
+                                                地点
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-8 column">
+                                            <h5>
+                                                {{ user_info.place | default_if_none:"—————未填写—————" | default:'—————未填写—————' }}
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+                                    <div class="row clearfix">
+                                        <div class="col-md-4 column">
+                                            <h5>
+                                                个人网站
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-8 column">
+                                            <h5>
+                                                {{ user_info.personal_web | default_if_none:"—————未填写—————" | default:'—————未填写—————' }}
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+                                    <a href="{% url 'homepage:personal_info_edit' %}" type="button"
+                                       class="btn btn-primary btn-block btn-default">编辑个人信息</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 column">
+                    <ul class="nav nav-tabs">
+                        <li id="pub_task">
+                            <a href="{% url 'homepage:homepage' page=1 label='pub_task' %}">已发布任务</a>
+                        </li>
+                        <li id="collected_task">
+                            <a href="{% url 'homepage:homepage' page=1 label='collected_task' %}">参加的任务</a>
+                        </li>
+                        <li id="pub_dataset">
+                            <a href="{% url 'homepage:homepage' page=1 label='pub_dataset' %}">已发布数据集</a>
+                        </li>
+                        <li id="collected_dataset">
+                            <a href="{% url 'homepage:homepage' page=1 label='collected_dataset' %}">收藏的数据集</a>
+                        </li>
+                    </ul>
+                    <div class="col-md-12 column">
+                        <!--一个数据集-->
+                        {% for dataset_info in dataset_info_page.object_list %}
+                            <div class="col-md-12 column" style="margin-top: 15px;margin-bottom:15px">
+                                <div class="col-md-12 column">
+                                    <div class="row">
+                                        <!--封面-->
+                                        <div class="col-md-2 col-xs-3 column clearfix" style="margin-top: 12px">
+                                            <img alt="数据集封面~"
+                                                 src="{% static dataset_info.dataset_img_path %}"
+                                                 class="img-responsive center-block img-rounded"/>
+                                        </div>
+                                        <!--中间内容上面标题，创建时间，中间数据集内容，底部数据集标签-->
+                                        <div class="col-md-7  col-xs-9 column">
+                                            <!--顶部显示数据集标题和创建日期top-->
+                                            <div class="row clearfix">
+                                                <div class="col-md-8 column col-xs-8">
+                                                    <h4>{{ dataset_info.dataset_title }}</h4>
+                                                </div>
+                                                <div class="col-md-4 column col-xs-4">
+                                                    <h5>{{ dataset_info.dataset_up_day }}</h5>
+                                                </div>
+                                            </div>
+                                            <!--数据集背景介绍middle-->
+                                            <div class="row clearfix">
+                                                <div class="col-md-12 column hidden-xs">
+                                                    <p>
+                                                        {% for dataset_set_background_ele in dataset_set_background %}
+                                                            {% if dataset_set_background_ele.dataset_info_background_id == dataset_info.dataset_id %}
+                                                                {{ dataset_set_background_ele.dataset_info_background_content }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="row clearfix">
+                                                <div class="col-md-12 column hidden-xs">
+                                                    {% for dataset_set_lables_ele in dataset_set_lables %}
+                                                        {% if dataset_set_lables_ele.dataset_info_labels_id == dataset_info.dataset_id %}
+                                                            <a>#{{ dataset_set_lables_ele.dataset_info_label_1 }}</a>
+                                                            <a>#{{ dataset_set_lables_ele.dataset_info_label_2 }}</a>
+                                                            <a>#{{ dataset_set_lables_ele.dataset_info_label_3 }}</a>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 hidden-xs">
+                                            <div class="col-md-12">
+                                                <button type="button" class="btn btn-default  btn-danger"
+                                                        style="margin-bottom: 5px; margin-top: 25px">删除数据集
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% for task_info in task_info_page.object_list %}
+                            <!--一个ele-->
+                            <div class="col-md-12 column" style="margin-top: 15px;margin-bottom:15px">
+                                <!--信息-->
+                                <div class="row clearfix">
+                                    <div class="col-md-12 column">
+                                        <div class="row clearfix">
+                                            <!--状态-->
+                                            <div class="col-md-3 column col-xs-4">
+                                                <h4>
+                                                    {% if task_info.status == 0 %}
+                                                        <span class="glyphicon glyphicon-dashboard"
+                                                              style="color:mediumspringgreen;"></span>
+                                                        未开始
+                                                    {% endif %}
+                                                    {% if task_info.status == 1 %}
+                                                        <span class="glyphicon glyphicon-dashboard"
+                                                              style="color:dodgerblue;"></span>
+                                                        正在进行
+                                                    {% endif %}
+                                                    {% if task_info.status == 2 %}
+                                                        <span class="glyphicon glyphicon-dashboard"
+                                                              style="color:indianred;"></span>
+                                                        已结束
+                                                    {% endif %}
+                                                </h4>
+                                            </div>
+                                            <!--标题-->
+                                            <div class="col-md-9 column col-xs-8">
+                                                <h4>
+                                                    <a href="{% url 'task:task_info' task_id=task_info.task_id %}">
+                                                        <b>
+                                                            {{ task_info.task_title }}
+                                                        </b>
+                                                    </a>
+
+                                                </h4>
+                                            </div>
+                                        </div>
+                                        <!--任务描述-->
+                                        <div class="row clearfix">
+                                            <div class="col-md-10 column">
+                                                <p>
+                                                    {{ task_info.task_describe }}
+                                                </p>
+                                            </div>
+                                            <!--封面-->
+                                            <div class="col-md-2 column clearfix hidden-xs">
+                                                <img alt="数据集封面~" src="{% static task_info.dataset_img_path %}"
+                                                     class="img-responsive center-block img-rounded"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--金币 开始时间 -->
+                                <div class="row clearfix">
+                                    <div class="col-md-12 column">
+                                        <!--金币-->
+                                        <div class="col-md-2 column col-xs-3">
+                                            <span class="glyphicon glyphicon-bitcoin"></span>
+                                            <b>
+                                                {{ task_info.coin }}
+                                            </b>
+                                        </div>
+                                        <!--开放时间-->
+                                        <div class="col-md-5 column col-xs-9">
+                                            <span class="glyphicon glyphicon-bell"></span>
+                                            {{ task_info.begin_day }}~{{ task_info.deadline }}
+                                        </div>
+                                        <!--提交任务答案-->
+                                        <div class="col-md-5 column hidden-xs">
+                                            {% if label == 'collected_task' %}
+                                                {% if task_info.status == 1 %}
+                                                    <a type="button" class="btn btn-xs"
+                                                       href="{% url 'homepage:submit_task_answer' task_id=task_info.task_id %}">
+                                                        <span class="glyphicon glyphicon-upload"></span>
+                                                        提交答案
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if label == 'pub_task' %}
+                                                <a type="button" class="btn btn-xs"
+                                                   href="{% url 'homepage:task_answer_list' task_id=task_info.task_id %}">
+                                                    <span class="glyphicon glyphicon-zoom-in"></span>
+                                                    查看答案
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--ele-->
+                        {% endfor %}
+                    </div>
+                    <!--数据集分页页数-->
+                    <div class="col-md-12 col-xs-12 column">
+                        <div class="row clearfix">
+                            <div class="col-md-5 col-xs-4 column">
+                            </div>
+                            <div class="col-md-3 col-xs-5 column">
+                                <ul class="pagination">
+                                    {% for page in dataset_info_paginator.page_range %}
+                                        <li>
+                                            <a href="{% url 'homepage:homepage' page=page label=label %}">{{ page }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col-md-4 col-xs-3 column">
+                            </div>
+                        </div>
+                    </div><!--数据集分页页数-->
+                    <!--任务分页页数-->
+                    <div class="col-md-12 col-xs-12 column">
+                        <div class="row clearfix">
+                            <div class="col-md-5 col-xs-4 column">
+                            </div>
+                            <div class="col-md-3 col-xs-5 column">
+                                <ul class="pagination">
+                                    {% for page in task_info_paginator.page_range %}
+                                        <li>
+                                            <a href="{% url 'homepage:homepage' page=page label=label %}">{{ page }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col-md-4 col-xs-3 column">
+                            </div>
+                        </div>
+                    </div><!--任务分页页数-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        $("#" + "{{ label }}").addClass('active');
+    });
+</script>
