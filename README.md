@@ -13,15 +13,41 @@
 ### 1.3项目部署
 - 项目部署在阿里云上，没上WSGI，因为这个模块在部署的时候老是抽风，半天搞不好，再一个我对中间件差不多是一窍不通，（2021/5/23是这个情况以后不好说）遂放弃。
 
-## 二、项目结构&code
-### 2.1项目结构
+## 二、项目结构
+### 项目结构
+├── Readme.md                   // help
+├── dataset                     // 数据集上传下载模块
+├── DataSocial                  // 项目
+│   ├── settings.py             // 配置
+│   ├── urls.py                 // 路由
+│   ├── experiment.json         // 实验
+├── dataset_file_savedir        // 存放数据集
+├── doc                         // 文档
+├── homepage                    // 首页
+├── log                         // 日志
+├── static                      // 静态文件
+├── task                        // 任务模块
+├── task_answer_dataset         // 任务回答模块
+├── task_dataset_file_savedir   // 任务附带数据集文件夹
+├── templates                   // 模板
+├── UserRegister                // 用户登录模块
+├── manage.py                   // 启动文件
 
+## 三、第三方服务&linux上的配置
+- 腾讯云短信服务实现登录注册手机短信验证任务
+- Crontab实现定时任务
+- captcha实现图形验证码
+- redis实现服务器端短信验证码的短期存储
 
+## 四、依赖的第三方库
+- Django
+- django-bootstrap3
+- django-crontab
+- django-redis 
+- Pillow
+- PyEmail
 
-
-
-
-
+## 项目截图
 
 
 
