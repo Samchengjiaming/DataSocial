@@ -1,6 +1,6 @@
 # DataSocial
 
-欢迎大家浏览我的[项目](http://cjmdatasocial.top:8000/)   该项目可能在2021/6/15日停止服务。
+欢迎大家浏览我的[毕业设计项目](http://cjmdatasocial.top:8000/)   该项目可能在2021/6/15日停止服务。
 
 
 
