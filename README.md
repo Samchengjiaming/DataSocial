@@ -15,23 +15,22 @@
 
 ## 二、项目结构
 ### 项目结构
-├── Readme.md                   // help
-├── dataset                     // 数据集上传下载模块
-├── DataSocial                  // 项目
-│   ├── settings.py             // 配置
-│   ├── urls.py                 // 路由
-│   ├── experiment.json         // 实验
-├── dataset_file_savedir        // 存放数据集
-├── doc                         // 文档
-├── homepage                    // 首页
-├── log                         // 日志
-├── static                      // 静态文件
-├── task                        // 任务模块
-├── task_answer_dataset         // 任务回答模块
-├── task_dataset_file_savedir   // 任务附带数据集文件夹
-├── templates                   // 模板
-├── UserRegister                // 用户登录模块
-├── manage.py                   // 启动文件
+- Readme.md                   // help
+- dataset                     // 数据集上传下载模块
+- DataSocial                  // 项目
+  - settings.py             // 配置
+  - urls.py                 // 路由
+- dataset_file_savedir        // 存放数据集
+- doc                         // 文档
+- homepage                    // 首页
+- log                         // 日志
+- static                      // 静态文件
+- task                        // 任务模块
+- task_answer_dataset         // 任务回答模块
+- task_dataset_file_savedir   // 任务附带数据集文件夹
+- templates                   // 模板
+- UserRegister                // 用户登录模块
+- manage.py                   // 启动文件
 
 ## 三、第三方服务&linux上的配置
 - 腾讯云短信服务实现登录注册手机短信验证任务
@@ -48,6 +47,12 @@
 - PyEmail
 
 ## 项目截图
-
-
+- 项目首页截图
+![Image text](https://github.com/Samchengjiaming/README_img/blob/master/homepage.PNG)
+- 数据集模块截图
+![Image text](https://github.com/Samchengjiaming/README_img/blob/master/dataset.PNG)
+- 任务模块截图
+![Image text](https://github.com/Samchengjiaming/README_img/blob/master/task.PNG)
+- 登录注册模块截图
+![Image text](https://github.com/Samchengjiaming/README_img/blob/master/sign_in.PNG)
 
